@@ -25,29 +25,31 @@ namespace Game.Domain
 
         public UserEntity FindById(Guid id)
         {
-            var filter = Builders<UserEntity>.Filter.Eq(x => x.Id, id);
-            return userCollection.Find(filter).FirstOrDefault();
+            return userCollection.Find(x => x.Id == id).FirstOrDefault();
         }
 
         public UserEntity GetOrCreateByLogin(string login)
         {
-            var filter = Builders<UserEntity>.Filter.Eq(x => x.Login, login);
-            var user = userCollection.Find(filter).FirstOrDefault();
-            if (user is default(UserEntity))
-                return Insert(new UserEntity { Login = login });
-            return user;
+            try
+            {
+                var user = new UserEntity { Login = login };
+                userCollection.InsertOne(user);
+                return user;
+            }
+            catch
+            {
+                return userCollection.Find(x => x.Login == login).First();
+            }
         }
 
         public void Update(UserEntity user)
         {
-            var filter = Builders<UserEntity>.Filter.Eq(x => x.Id, user.Id);
-            userCollection.ReplaceOne(filter, user);
+            userCollection.ReplaceOne(x => x.Id == user.Id, user);
         }
 
         public void Delete(Guid id)
         {
-            var filter = Builders<UserEntity>.Filter.Eq(x => x.Id, id);
-            userCollection.DeleteOne(filter);
+            userCollection.DeleteOne(x => x.Id == id);
         }
 
         // Для вывода списка всех пользователей (упорядоченных по логину)

@@ -136,7 +136,7 @@ namespace Tests
         }
 
         [Test(Description = "Параллельные запросы не должны падать")]
-        [Explicit("Наивная реализация GetOrCreateByLogin не пройдет этот тест")]
+        // [Explicit("Наивная реализация GetOrCreateByLogin не пройдет этот тест")]
         public void MassiveConcurrentCreateUser()
         {
             for (int i = 0; i < 1000; i++)
